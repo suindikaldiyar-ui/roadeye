@@ -12,6 +12,11 @@ export const SEVERITY_COLORS: Record<Severity, string> = {
   low: "#eab308", // жёлтый
 };
 
+/** Порядок перебора для фильтров и таблицы отчёта */
+export const TYPE_ORDER: DefectType[] = ["pothole", "crack", "manhole"];
+export const SEVERITY_ORDER: Severity[] = ["high", "medium", "low"];
+export const STATUS_ORDER: DefectStatus[] = ["new", "in_progress", "fixed"];
+
 /** Русские подписи */
 export const TYPE_LABELS: Record<DefectType, string> = {
   pothole: "Яма",

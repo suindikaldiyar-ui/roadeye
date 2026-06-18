@@ -1,7 +1,13 @@
 import type { Defect } from "@/lib/types";
 import StatsBar from "./StatsBar";
 
-export default function Header({ defects }: { defects: Defect[] }) {
+export default function Header({
+  defects,
+  onOpenReport,
+}: {
+  defects: Defect[];
+  onOpenReport: () => void;
+}) {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="flex flex-col gap-4 px-5 py-3.5 lg:flex-row lg:items-center lg:justify-between">
@@ -27,7 +33,31 @@ export default function Header({ defects }: { defects: Defect[] }) {
           </div>
         </div>
 
-        <StatsBar defects={defects} />
+        <div className="flex items-center gap-5">
+          <StatsBar defects={defects} />
+          <button
+            type="button"
+            onClick={onOpenReport}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none">
+              <path
+                d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5Z"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M14 3v5h5M9 13h6M9 17h6"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Отчёт
+          </button>
+        </div>
       </div>
     </header>
   );

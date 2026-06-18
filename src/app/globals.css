@@ -32,3 +32,29 @@ body {
   margin: 10px 12px;
   font-size: 13px;
 }
+
+/* Печать: оставляем только отчёт (.print-area), прячем дашборд и служебный UI */
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .screen-only,
+  .no-print {
+    display: none !important;
+  }
+
+  .print-area {
+    position: static !important;
+    overflow: visible !important;
+  }
+
+  /* Повтор шапки таблицы на каждой печатной странице, аккуратные разрывы */
+  .report-table thead {
+    display: table-header-group;
+  }
+
+  .report-table tr {
+    break-inside: avoid;
+  }
+}
