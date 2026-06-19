@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Defect } from "@/lib/types";
 import StatsBar from "./StatsBar";
 
@@ -37,6 +38,21 @@ export default function Header({
 
         <div className="flex items-center gap-5">
           <StatsBar defects={defects} />
+          <Link
+            href="/capture"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none">
+              <path
+                d="M23 7l-7 5 7 5V7zM1 5h15v14H1z"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Запись маршрута
+          </Link>
           <button
             type="button"
             onClick={onOpenUpload}
