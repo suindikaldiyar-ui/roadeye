@@ -9,4 +9,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  global: {
+    // Запрещаем Next/Vercel кэшировать REST-ответы Supabase —
+    // дашборд всегда читает свежие данные из базы.
+    fetch: (input, init) => fetch(input, { ...init, cache: "no-store" }),
+  },
+});

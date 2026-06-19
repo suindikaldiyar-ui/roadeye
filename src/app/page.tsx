@@ -2,8 +2,10 @@ import { supabase } from "@/lib/supabaseClient";
 import type { Defect } from "@/lib/types";
 import Dashboard from "@/components/Dashboard";
 
-// Демо-данные: всегда свежее чтение из Supabase
+// Демо-данные: всегда свежее чтение из Supabase, без кэша Next/Vercel
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 async function getDefects(): Promise<{ defects: Defect[]; error: string | null }> {
   const { data, error } = await supabase
