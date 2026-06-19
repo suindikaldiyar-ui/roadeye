@@ -1,7 +1,7 @@
 import type { DefectType, Severity, DefectStatus } from "./types";
 
-/** Центр и зум карты — город Уральск / Орал */
-export const MAP_CENTER: [number, number] = [51.23, 51.39];
+/** Центр и зум карты — временно Шымкент (тестирование) */
+export const MAP_CENTER: [number, number] = [42.3417, 69.5901];
 export const MAP_ZOOM = 13;
 export const MAP_FLY_ZOOM = 16;
 
