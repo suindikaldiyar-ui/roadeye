@@ -81,6 +81,8 @@ async function reverseGeocode(
     `https://nominatim.openstreetmap.org/reverse?format=jsonv2` +
     `&lat=${lat}&lon=${lon}&accept-language=ru`;
 
+  console.log("[geocode] запрос к Nominatim:", url);
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 5000);
   try {
@@ -89,13 +91,32 @@ async function reverseGeocode(
       signal: controller.signal,
       cache: "no-store",
     });
-    if (!res.ok) return null;
+    console.log("[geocode] HTTP статус:", res.status);
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "(не удалось прочитать тело)");
+      console.error("[geocode] не-OK ответ:", res.status, errText);
+      return null;
+    }
+
     const data = (await res.json()) as {
       display_name?: string;
       address?: NominatimAddress;
     };
-    return buildAddress(data.address) ?? data.display_name ?? null;
-  } catch {
+    console.log("[geocode] тело ответа:", JSON.stringify(data));
+
+    const resolved = buildAddress(data.address) ?? data.display_name ?? null;
+    console.log("[geocode] итоговый адрес:", resolved);
+    return resolved;
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      console.error("[geocode] Nominatim timeout");
+    } else {
+      console.error(
+        "[geocode] ошибка запроса:",
+        err instanceof Error ? err.message : String(err)
+      );
+    }
     return null;
   } finally {
     clearTimeout(timeout);
