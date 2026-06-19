@@ -57,3 +57,9 @@ export function formatDate(iso: string): string {
   if (Number.isNaN(d.getTime())) return "—";
   return dateFormatter.format(d);
 }
+
+/** Уверенность ИИ (0..1) → «NN %» */
+export function formatConfidence(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) return "—";
+  return `${Math.round(value * 100)} %`;
+}

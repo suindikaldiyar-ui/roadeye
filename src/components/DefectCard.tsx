@@ -8,6 +8,7 @@ import {
   formatDate,
 } from "@/lib/constants";
 import SeverityBadge from "./SeverityBadge";
+import AiBadge from "./AiBadge";
 
 export default function DefectCard({
   defect,
@@ -29,8 +30,13 @@ export default function DefectCard({
       }`}
     >
       <div className="flex items-start justify-between gap-2">
-        <span className="text-sm font-semibold text-slate-900">
-          {TYPE_LABELS[defect.type]}
+        <span className="flex items-center gap-1.5">
+          <span className="text-sm font-semibold text-slate-900">
+            {TYPE_LABELS[defect.type]}
+          </span>
+          {defect.source === "ai" && (
+            <AiBadge confidence={defect.ai_confidence} />
+          )}
         </span>
         <SeverityBadge severity={defect.severity} />
       </div>

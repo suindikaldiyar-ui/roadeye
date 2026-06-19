@@ -12,6 +12,7 @@ export interface Defect {
   photo_url: string | null;
   status: DefectStatus;
   ai_confidence: number | null;
+  source: string | null;
   detected_at: string;
   created_at: string;
 }

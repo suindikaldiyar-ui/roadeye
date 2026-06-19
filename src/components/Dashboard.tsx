@@ -7,6 +7,7 @@ import DefectList from "./DefectList";
 import MapView from "./MapView.dynamic";
 import FilterBar, { type Filters, type FilterCategory } from "./FilterBar";
 import ReportView from "./ReportView";
+import UploadModal from "./UploadModal";
 
 const emptyFilters = (): Filters => ({
   types: new Set(),
@@ -18,6 +19,7 @@ export default function Dashboard({ defects }: { defects: Defect[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [reportOpen, setReportOpen] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   const filteredDefects = useMemo(() => {
     return defects.filter(
@@ -58,6 +60,7 @@ export default function Dashboard({ defects }: { defects: Defect[] }) {
         <Header
           defects={filteredDefects}
           onOpenReport={() => setReportOpen(true)}
+          onOpenUpload={() => setUploadOpen(true)}
         />
 
         <FilterBar
@@ -93,6 +96,8 @@ export default function Dashboard({ defects }: { defects: Defect[] }) {
           onClose={() => setReportOpen(false)}
         />
       )}
+
+      {uploadOpen && <UploadModal onClose={() => setUploadOpen(false)} />}
     </div>
   );
 }

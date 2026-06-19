@@ -13,6 +13,7 @@ import {
   SEVERITY_LABELS,
   STATUS_LABELS,
   formatDate,
+  formatConfidence,
 } from "@/lib/constants";
 import Legend from "./Legend";
 
@@ -114,6 +115,11 @@ export default function MapView({
                   <span className="text-slate-500">Статус: </span>
                   {STATUS_LABELS[d.status]}
                 </p>
+                {d.source === "ai" && (
+                  <p className="text-xs font-medium text-violet-700">
+                    ✦ ИИ · {formatConfidence(d.ai_confidence)}
+                  </p>
+                )}
               </div>
             </Popup>
           </Marker>

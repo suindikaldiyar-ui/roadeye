@@ -4,9 +4,11 @@ import StatsBar from "./StatsBar";
 export default function Header({
   defects,
   onOpenReport,
+  onOpenUpload,
 }: {
   defects: Defect[];
   onOpenReport: () => void;
+  onOpenUpload: () => void;
 }) {
   return (
     <header className="border-b border-slate-200 bg-white">
@@ -35,6 +37,22 @@ export default function Header({
 
         <div className="flex items-center gap-5">
           <StatsBar defects={defects} />
+          <button
+            type="button"
+            onClick={onOpenUpload}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none">
+              <path
+                d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0-12L8 8m4-4l4 4"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Загрузить фото
+          </button>
           <button
             type="button"
             onClick={onOpenReport}
