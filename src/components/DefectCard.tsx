@@ -29,6 +29,26 @@ export default function DefectCard({
           : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
       }`}
     >
+      {defect.photo_url && (
+        <span
+          role="button"
+          tabIndex={-1}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(defect.photo_url!, "_blank", "noopener,noreferrer");
+          }}
+          className="mb-2 block overflow-hidden rounded-md"
+          title="Открыть фото в полном размере"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={defect.photo_url}
+            alt="Фото дефекта"
+            className="h-28 w-full object-cover"
+          />
+        </span>
+      )}
+
       <div className="flex items-start justify-between gap-2">
         <span className="flex items-center gap-1.5">
           <span className="text-sm font-semibold text-slate-900">
@@ -43,6 +63,10 @@ export default function DefectCard({
 
       <p className="mt-1 line-clamp-1 text-xs text-slate-600">
         {defect.address ?? "Адрес не указан"}
+      </p>
+
+      <p className="mt-0.5 text-[11px] tabular-nums text-slate-400">
+        📍 {defect.latitude.toFixed(4)}, {defect.longitude.toFixed(4)}
       </p>
 
       <div className="mt-2 flex items-center justify-between">

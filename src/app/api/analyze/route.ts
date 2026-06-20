@@ -123,6 +123,35 @@ async function reverseGeocode(
   }
 }
 
+const PHOTO_BUCKET = "defect-photos";
+
+/**
+ * Загрузка кадра в публичный Storage-bucket через anon-клиент (best-effort).
+ * При любой ошибке → null (дефект всё равно сохранится), ошибка в лог [photo].
+ */
+async function uploadFrame(imageBase64: string): Promise<string | null> {
+  try {
+    const buffer = Buffer.from(imageBase64, "base64");
+    const name = `${crypto.randomUUID()}.jpg`;
+    const { error } = await supabase.storage
+      .from(PHOTO_BUCKET)
+      .upload(name, buffer, { contentType: "image/jpeg" });
+    if (error) {
+      console.error("[photo] ошибка загрузки в Storage:", error.message);
+      return null;
+    }
+    const { data } = supabase.storage.from(PHOTO_BUCKET).getPublicUrl(name);
+    console.log("[photo] загружено:", data.publicUrl);
+    return data.publicUrl ?? null;
+  } catch (err) {
+    console.error(
+      "[photo] исключение при загрузке:",
+      err instanceof Error ? err.message : String(err)
+    );
+    return null;
+  }
+}
+
 function normalize(items: unknown[]): AiDefect[] {
   const result: AiDefect[] = [];
   for (const item of items) {
@@ -231,6 +260,9 @@ export async function POST(request: Request) {
   const resolvedAddress =
     (await reverseGeocode(latitude, longitude)) ?? manualAddress;
 
+  // --- Загрузка кадра в Storage (best-effort): один кадр → один photo_url ---
+  const photoUrl = await uploadFrame(imageBase64);
+
   // --- Сохранение в Supabase ---
   const detectedAt = new Date().toISOString();
   const rows = found.map((d) => ({
@@ -240,6 +272,7 @@ export async function POST(request: Request) {
     latitude,
     longitude,
     address: resolvedAddress,
+    photo_url: photoUrl,
     status: "new",
     source: "ai",
     detected_at: detectedAt,

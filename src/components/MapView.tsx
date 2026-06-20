@@ -98,6 +98,21 @@ export default function MapView({
           >
             <Popup>
               <div className="space-y-1">
+                {d.photo_url && (
+                  <a
+                    href={d.photo_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={d.photo_url}
+                      alt="Фото дефекта"
+                      className="h-[120px] w-full rounded-md object-cover"
+                    />
+                  </a>
+                )}
                 <p className="text-sm font-semibold text-slate-900">
                   {TYPE_LABELS[d.type]}
                 </p>
@@ -109,6 +124,9 @@ export default function MapView({
                 </p>
                 <p className="text-xs text-slate-600">
                   {d.address ?? "Адрес не указан"}
+                </p>
+                <p className="text-[11px] tabular-nums text-slate-400">
+                  📍 {d.latitude.toFixed(4)}, {d.longitude.toFixed(4)}
                 </p>
                 <p className="text-xs text-slate-500">{formatDate(d.detected_at)}</p>
                 <p className="text-xs">
