@@ -46,6 +46,21 @@ function MapController({
   return null;
 }
 
+/**
+ * Пересчитывает размер карты, когда контейнер меняет размеры
+ * (например, при переключении вкладок Карта/Список на мобиле — display:none → block).
+ */
+function ResizeHandler() {
+  const map = useMap();
+  useEffect(() => {
+    const container = map.getContainer();
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [map]);
+  return null;
+}
+
 export default function MapView({
   defects,
   selectedId,
@@ -85,6 +100,7 @@ export default function MapView({
         />
 
         <MapController selected={selected} />
+        <ResizeHandler />
 
         {defects.map((d) => (
           <Marker

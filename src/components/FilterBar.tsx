@@ -38,7 +38,7 @@ function Chip({ label, active, color, onClick }: ChipProps) {
       onClick={onClick}
       aria-pressed={active}
       style={style}
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${
+      className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors md:min-h-0 md:px-2.5 md:py-1 md:text-xs ${
         active
           ? color
             ? "" // цвет задаётся через style
@@ -128,7 +128,7 @@ export default function FilterBar({
         type="button"
         onClick={onReset}
         disabled={!isActive}
-        className="ml-auto inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+        className="ml-auto inline-flex min-h-[40px] items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent md:min-h-0 md:px-2.5 md:py-1 md:text-xs"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none">
           <path

@@ -36,11 +36,12 @@ export default function Header({
           </div>
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-5">
           <StatsBar defects={defects} />
+          <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/capture"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 lg:min-h-0 lg:py-1.5"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none">
               <path
@@ -56,7 +57,7 @@ export default function Header({
           <button
             type="button"
             onClick={onOpenUpload}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 lg:min-h-0 lg:py-1.5"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none">
               <path
@@ -72,7 +73,7 @@ export default function Header({
           <button
             type="button"
             onClick={onOpenReport}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-slate-700"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-slate-700 lg:min-h-0 lg:py-1.5"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none">
               <path
@@ -91,6 +92,7 @@ export default function Header({
             </svg>
             Отчёт
           </button>
+          </div>
         </div>
       </div>
     </header>
