@@ -6,22 +6,45 @@ import type { DefectType, Severity } from "@/lib/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const VALID_TYPES: DefectType[] = ["pothole", "crack", "manhole"];
 const VALID_SEVERITIES: Severity[] = ["low", "medium", "high"];
 
-const PROMPT = `Ты — эксперт по обследованию дорожного покрытия. Проанализируй фотографию дороги и найди дефекты ТОЛЬКО трёх типов:
-- "pothole" — яма / выбоина в покрытии;
-- "crack" — трещина (одиночная или сетка трещин);
-- "manhole" — открытый, проваленный или повреждённый канализационный/смотровой люк.
+const PROMPT = `Ты — эксперт по обследованию дорожного покрытия. Найди на фото ТОЛЬКО реальные,
+чётко видимые дефекты дороги.
 
-Для каждого найденного дефекта верни объект с полями:
-- "type": один из "pothole" | "crack" | "manhole";
-- "severity": "low" | "medium" | "high" — по размеру и опасности для движения;
-- "confidence": число от 0 до 1 — уверенность в распознавании;
-- "note": краткое описание дефекта на русском (1 предложение).
+Типы:
+- "яма" — выраженная выбоина с разрушенными краями и заметной глубиной.
+- "трещина" — видимые линейные трещины или сетка трещин в покрытии.
+- "люк" — открытый, повреждённый, провалившийся или отсутствующий люк.
 
-Если дефектов указанных типов на фото нет — верни пустой массив [].
-Ответ верни СТРОГО как JSON-массив объектов, без какого-либо другого текста.`;
+ПРАВИЛА:
+- Сообщай о дефекте ТОЛЬКО если он чётко виден. Сомневаешься — не добавляй.
+- Если дорога в нормальном состоянии — верни пустой массив []. Не выдумывай дефекты.
+- НЕ дефекты: швы между плитами, разметка, тени, мокрый асфальт, следы шин,
+  целые люки вровень с покрытием, обычная шероховатость асфальта, гравий на обочине.
+- confidence ставь честно: 0.8–1.0 только для явных дефектов; неуверен — не добавляй.
+
+severity:
+- "high" — крупная/глубокая яма, широкая сетка трещин, открытый люк (опасно).
+- "medium" — заметный, но не опасный немедленно.
+- "low" — мелкий поверхностный износ.
+
+Верни СТРОГО JSON-массив без markdown:
+[{"type":"яма|трещина|люк","severity":"low|medium|high","confidence":0.0–1.0}]
+Дефектов нет — верни [].`;
+
+/** Минимальная уверенность ИИ для сохранения дефекта */
+const MIN_CONFIDENCE = 0.7;
+
+/** Русские типы из ответа модели → внутренние английские значения (формат БД не меняем) */
+const TYPE_MAP: Record<string, DefectType> = {
+  яма: "pothole",
+  трещина: "crack",
+  люк: "manhole",
+  // на случай, если модель вернёт по-английски
+  pothole: "pothole",
+  crack: "crack",
+  manhole: "manhole",
+};
 
 interface AiDefect {
   type: DefectType;
@@ -157,9 +180,11 @@ function normalize(items: unknown[]): AiDefect[] {
   for (const item of items) {
     if (!item || typeof item !== "object") continue;
     const obj = item as Record<string, unknown>;
-    const type = obj.type as DefectType;
+    const rawType =
+      typeof obj.type === "string" ? obj.type.trim().toLowerCase() : "";
+    const type = TYPE_MAP[rawType];
     const severity = obj.severity as Severity;
-    if (!VALID_TYPES.includes(type)) continue;
+    if (!type) continue; // нераспознанный тип
     if (!VALID_SEVERITIES.includes(severity)) continue;
     result.push({
       type,
@@ -249,7 +274,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const found = normalize(extractArray(parsed));
+  // Порог уверенности: ниже MIN_CONFIDENCE считаем ложным срабатыванием
+  const found = normalize(extractArray(parsed)).filter(
+    (d) => d.confidence >= MIN_CONFIDENCE
+  );
 
   if (found.length === 0) {
     return NextResponse.json({ defects: [], saved: 0 });
